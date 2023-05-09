@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	<style>
+		html, body {
+			height: 95%;
+			margin: 0;
+			padding: 20px;
+		}
+		#map {
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+</head>
+<body>
+<div id='map'></div>
+<script>
+	
+	var map = L.map('map', {
+		crs: L.CRS.Simple,
+		minZoom: -4,
+		maxZoom: 0,
+		zoom: -1.65
+	});
+	
+	var bottomLeft = [-4000, -4000];
+	var topRight = [8000, 6000];
+	var bounds = [bottomLeft, topRight];
+	
+	var yx = L.latLng;
+	
+	var xy = function(x, y) {
+		if (L.Util.isArray(x)) {    // When doing xy([x, y]);
+			return yx(x[1], x[0]);
+		}
+		return yx(y, x);  // When doing xy(x, y);
+	};	
+	//var travel = L.polyline([vanda, smeltery]).addTo(map);
+
+	map.setView(xy(20, -1120));
+	
+	
+    var neighborhoods = L.imageOverlay('https://i.gyazo.com/05b310d242e603d60948c979d197931d.jpg', bounds).addTo(map),
+	satlite = L.imageOverlay('https://i.gyazo.com/26c0d2c9f37e6df78f5bff22d7e5a637.jpg', bounds).addTo(map);
+	
+	var myIcon = L.icon({
+    //iconUrl: 'https://i.gyazo.com/e20075f67d7ad1ca977fd9ea665e7e92.png',
+    iconSize: [25, 41]
+	});
+	
+	var gangs = L.layerGroup().addTo(map);
+	var markers = L.layerGroup();	
+		
+		
+	
+	
+	var baseMaps = {
+    "neighborhoods": neighborhoods,
+	"satlite": satlite
+	};
+	
+	var vagos = L.polygon([
+    
+		
+    [-2052,196],
+	[-1921,318],
+	[-1804,426],
+	[-1745,451],
+	[-1681,494],
+	[-1742,582],
+	[-1845,581],
+	[-1889,547],
+	[-1947,582],
+	[-2020,513],
+	[-2157,401],
+	[-2170,335]
+	
+	
+	], 
+	{color: 'yellow',
+	fillColor: 'yellow',}
+	).addTo(gangs).bindPopup("Vagos").bindTooltip("Vagos");
+	
+	
+	map.on('click', function (event) {
+	var coords = event.latlng;
+	L.popup()
+	.setLatLng(coords)
+	.setContent('[' + Math.floor(coords.lng) + ',' + Math.floor(coords.lat) +']')
+	.openOn(map);
+	});
+	
+L.control.layers(baseMaps).addTo(map);
+
+</script>
+
+
+
+</body>
+</html>
